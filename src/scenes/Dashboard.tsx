@@ -1,40 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 
-import { Drawer, Main } from "../general/components";
+import { Drawer, Main, Table } from "../general/components";
+import {Text} from "../general/core-ui";
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+type Items = {
+  nik: string;
+  name: string;
+  datein: string;
+  dateout: string;
+  selfie: string;
+};
 
 export default function Dashboard() {
   const classes = useStyles();
+  const rowTable: Array<string> = [
+    "NIK",
+    "NAME",
+    "DETE IN",
+    "DATE OUT",
+    "SELFIE"
+  ];
+
+  let [items, setItems] = useState<Items[]>([]);
+
+  useEffect(() => {
+    let data: Items[] = [
+      {
+        nik: "1232324",
+        name: "Febrianto",
+        datein: new Date().toDateString(),
+        dateout: new Date().toDateString(),
+        selfie: "selfie",
+      },
+      {
+        nik: "4232324",
+        name: "Febrianto",
+        datein: new Date().toDateString(),
+        dateout: new Date().toDateString(),
+        selfie: "selfie",
+      },
+    ];
+
+    setItems(data);
+  }, []);
+
   return (
     <div className={classes.root}>
       <Drawer />
       <Main>
-        
+        <Text size="large" bold > Absences Lists</Text>
+        <Table lists={rowTable}>
+          {items.map((row) => (
+            <TableRow key={row.nik}>
+              <TableCell>{row.nik}</TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.datein}</TableCell>
+              <TableCell>{row.dateout}</TableCell>
+              <TableCell>{row.selfie}</TableCell>
+            </TableRow>
+          ))}
+        </Table>
       </Main>
     </div>
   );

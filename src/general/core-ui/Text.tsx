@@ -1,46 +1,50 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from "react";
+import { createStyles, withStyles, WithStyles } from "@material-ui/core";
+import Typography, { TypographyProps } from "@material-ui/core/Typography";
 
-import {TEXT as TEXT_COLOR} from '../constants/colors';
-import {FONT_SIZE} from '../constants/size';
+import { TEXT as TEXT_COLOR } from "../constants/colors";
+import { FONT_SIZE } from "../constants/size";
 
 type FontSize = keyof typeof FONT_SIZE;
 type TypeColor = keyof typeof TEXT_COLOR;
 
-type Props = & {
-  size?: FontSize;
-  typeColor?: TypeColor;
-  bold?: boolean;
-  italic?: boolean;
-  style?: any;
-  children?: ReactNode;
-};
+type Props = WithStyles<typeof styles> &
+  TypographyProps & {
+    size?: FontSize;
+    typeColor?: TypeColor;
+    bold?: boolean;
+    style?: any;
+    children?: ReactNode;
+  };
 
 function Text(props: Props) {
   let {
-    size = 'default',
-    typeColor = 'default',
+    size = "default",
+    typeColor = "default",
     bold,
-    italic,
     style,
     children,
+    classes,
     ...otherProps
   } = props;
 
-//   let defaultStyle: StyleProp<TextStyle> = [
-//     {
-//       fontSize: FONT_SIZE[size],
-//       color: TEXT_COLOR[typeColor],
-//     },
-//     bold && {fontWeight: 'bold'},
-//     italic && {fontStyle: 'italic'},
-//     style,
-//   ];
+  let defaultStyle = {
+    fontSize: FONT_SIZE[size],
+    color: TEXT_COLOR[typeColor],
+  };
+
+  let textStyle = bold ? classes.coreStyle : "";
 
   return (
-    <text style={style} {...otherProps}>
+    <Typography style={defaultStyle} className={textStyle} {...otherProps}>
       {children}
-    </text>
+    </Typography>
   );
 }
+const styles = createStyles({
+  coreStyle: {
+    fontWeight: "bold",
+  },
+});
 
-export default Text;
+export default withStyles(styles)(Text);
