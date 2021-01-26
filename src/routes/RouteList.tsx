@@ -30,9 +30,8 @@ const commonRoutes = [
     component: EmployeeCreate,
   },
   {
-    path: "/employee/edit",
-    exact: true,
-    component: EmployeeEdit,
+    path: "/employee/edit/:id",
+    component: EmployeeEdit
   },
 ];
 

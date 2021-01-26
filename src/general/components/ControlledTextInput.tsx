@@ -1,3 +1,4 @@
+import { render } from '@testing-library/react';
 import React, {ChangeEvent} from 'react';
 import {Controller, UseControllerOptions} from 'react-hook-form';
 import {TextInput, TextInputCoreUIProps} from '../core-ui';
@@ -16,8 +17,10 @@ function ControlledTextInput(props: Props) {
     rules,
     transformOutput,
     defaultValue = '',
+    value='',
     ...textInputProps
   } = props;
+  console.log('render');
   return (
     <Controller
       control={control}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,11 +7,12 @@ import Container from '@material-ui/core/Container';
 
 import { Drawer, Main, ControlledTextInput } from '../../general/components';
 import { Text, Button } from '../../general/core-ui';
+import fetchApi from '../../general/helpers/fetchApi';
 
 type CreateForm = {
   nik: string;
   password: string;
-  name: string;
+  fullname: string;
   phone_number: string;
   email: string;
   created: string;
@@ -22,6 +23,16 @@ export default function Create() {
   const classes = useStyles();
 
   let { control, errors, handleSubmit, setValue } = useForm<CreateForm>();
+
+  const postEmployee = async (props: CreateForm) => {
+    let { statusCode } = await fetchApi('/api/employee', {
+      method: 'POST',
+      body: props
+    });
+    if (statusCode === 200) {
+      history.push('/employee');
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -79,9 +90,9 @@ export default function Create() {
               rules={{
                 required: 'Nama wajib diisi',
               }}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              name='name'
+              error={!!errors.fullname}
+              helperText={errors.fullname?.message}
+              name='fullname'
               label='Name*'
               classes={{
                 root: classes.input,
@@ -118,7 +129,7 @@ export default function Create() {
 
             <Button
               onPress={handleSubmit((_data) => {
-                history.push('/employee');
+                postEmployee(_data);
               })}
             >
               Submit

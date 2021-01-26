@@ -6,10 +6,12 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { Drawer, Main, Table } from '../../general/components';
 import { Text, Button } from '../../general/core-ui';
+import fetchApi from '../../general/helpers/fetchApi';
 
 type Items = {
+  id: string;
   nik: string;
-  name: string;
+  fullname: string;
   phone_number: string;
   email: string;
   created: string;
@@ -19,6 +21,7 @@ export default function List() {
   const history = useHistory();
   const classes = useStyles();
   const rowTable: Array<string> = [
+    'ID',
     'NIK',
     'NAME',
     'PHONE NUMBER',
@@ -29,25 +32,25 @@ export default function List() {
 
   let [items, setItems] = useState<Items[]>([]);
 
-  useEffect(() => {
-    let data: Items[] = [
-      {
-        nik: '1232324',
-        name: 'Febrianto',
-        phone_number: '08134343434',
-        email: 'febrielven@gmail.com',
-        created: new Date().toDateString(),
-      },
-      {
-        nik: '2323246',
-        name: 'Febrianto',
-        phone_number: '08134343434',
-        email: 'febrielven@gmail.com',
-        created: new Date().toDateString(),
-      },
-    ];
+  const getEmployee = async () => {
+    let { data, statusCode } = await fetchApi('/api/employee');
+    if (statusCode === 200) {
+      setItems(data);
+    }
+  };
 
-    setItems(data);
+  const deleteEmployee = async (event:any,id:string) => {
+    console.log('delete'+ id);
+    let { statusCode } = await fetchApi(`/api/employee/${id}`, {
+      method: 'DELETE',
+    });
+    if (statusCode === 200) {
+      getEmployee();
+    }
+  };
+
+  useEffect(() => {
+    getEmployee();
   }, []);
 
   return (
@@ -65,17 +68,25 @@ export default function List() {
 
         <Table lists={rowTable}>
           {items.map((row) => (
-            <TableRow key={row.nik}>
+            <TableRow key={row.id}>
+              <TableCell>{row.id}</TableCell>
               <TableCell>{row.nik}</TableCell>
-              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.fullname}</TableCell>
               <TableCell>{row.phone_number}</TableCell>
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.created}</TableCell>
               <TableCell className={classes.spacearound}>
-                <Button className={classes.button} onPress={() => history.push('/employee/edit')}>
+                <Button
+                  className={classes.button}
+                  onPress={() => history.push(`/employee/edit/${row.id}`)}
+                >
                   Edit
                 </Button>
-                <Button buttonType='secondary' onPress={() => alert('delete')}> Delete</Button>
+                <Button 
+                  buttonType='secondary' 
+                  onPress={(e)=> deleteEmployee(e, row.id)}>
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -98,10 +109,10 @@ const useStyles = makeStyles({
   },
   spacearound: {
     display: 'flex',
-    flexDirection:'row',
+    flexDirection: 'row',
   },
-  button:{
-    marginRight:15,
-    backgroundColor:'#BDBDBD'
-  }
+  button: {
+    marginRight: 15,
+    backgroundColor: '#BDBDBD',
+  },
 });
