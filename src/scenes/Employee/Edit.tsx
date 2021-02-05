@@ -30,18 +30,16 @@ function Edit(props: Props) {
 
   useEffect(() => {
     getEmployeeOne();
-    if (item) {
-      setValue("nik", item.nik);
-      setValue("fullname", item.fullname);
-      setValue("phone_number", item.phone_number);
-      setValue("email", item.email);
-    }
-  }, []);
+  }, [!item]);
 
   const getEmployeeOne = async () => {
     let { data, statusCode } = await fetchApi(`/api/employee/${id}`);
     if (statusCode === 200) {
       setItem(data);
+      setValue("nik", data.nik);
+      setValue("fullname", data.fullname);
+      setValue("phone_number", data.phone_number);
+      setValue("email", data.email);
     }
   };
 
